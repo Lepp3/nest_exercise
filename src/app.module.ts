@@ -4,6 +4,10 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import configuration from './config/configuration';
+import { Company } from './entities/company/company.entity';
+import { User } from './entities/user/user.entity';
+import { Warehouse } from './entities/warehouse/warehouse.entity';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 @Module({
   imports: [
@@ -31,9 +35,12 @@ import configuration from './config/configuration';
           synchronize: false,
           retryAttempts: 4,
           logging: true,
+          namingStrategy: new SnakeNamingStrategy(),
+          entities: [Company, User, Warehouse],
         };
       },
     }),
+    TypeOrmModule.forFeature([Company, User, Warehouse]),
   ],
   controllers: [AppController],
   providers: [AppService],
