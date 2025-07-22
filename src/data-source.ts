@@ -1,5 +1,4 @@
 import { DataSource } from 'typeorm';
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { Company } from './entities/company/company.entity';
 import { User } from './entities/user/user.entity';
 import { Warehouse } from './entities/warehouse/warehouse.entity';
@@ -21,7 +20,6 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: false,
   logging: true,
-  namingStrategy: new SnakeNamingStrategy(),
   entities: [
     Company,
     User,

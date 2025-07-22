@@ -16,9 +16,9 @@ export class CreateCompanyTable1753181708055 implements MigrationInterface {
           },
           { name: 'name', type: 'varchar', isNullable: false },
           { name: 'location', type: 'varchar', isNullable: false },
-          { name: 'createdAt', type: 'timestamptz', default: 'now()' },
-          { name: 'updatedAt', type: 'timestamptz', default: 'now()' },
-          { name: 'deletedAt', type: 'timestamptz', isNullable: true },
+          { name: 'created_at', type: 'timestamptz', default: 'now()' },
+          { name: 'updated_at', type: 'timestamptz', default: 'now()' },
+          { name: 'deleted_at', type: 'timestamptz', isNullable: true },
         ],
       }),
     );

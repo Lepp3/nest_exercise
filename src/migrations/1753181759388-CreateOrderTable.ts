@@ -20,20 +20,20 @@ export class CreateOrderTable1753181759388 implements MigrationInterface {
             isPrimary: true,
             default: 'gen_random_uuid()',
           },
-          { name: 'companyId', type: 'uuid', isNullable: false },
-          { name: 'userId', type: 'uuid', isNullable: false },
-          { name: 'warehouseId', type: 'uuid', isNullable: false },
-          { name: 'partnerId', type: 'uuid', isNullable: false },
+          { name: 'company_id', type: 'uuid', isNullable: false },
+          { name: 'user_id', type: 'uuid', isNullable: false },
+          { name: 'warehouse_id', type: 'uuid', isNullable: false },
+          { name: 'partner_id', type: 'uuid', isNullable: false },
           {
             name: 'type',
             type: 'order_type_enum',
             isNullable: false,
           },
           { name: 'date', type: 'date', isNullable: false, default: 'now()' },
-          { name: 'createdAt', type: 'timestamptz', default: 'now()' },
-          { name: 'updatedAt', type: 'timestamptz', default: 'now()' },
-          { name: 'deletedAt', type: 'timestamptz', isNullable: true },
-          { name: 'modifiedBy', type: 'uuid', isNullable: true },
+          { name: 'created_at', type: 'timestamptz', default: 'now()' },
+          { name: 'updated_at', type: 'timestamptz', default: 'now()' },
+          { name: 'deleted_at', type: 'timestamptz', isNullable: true },
+          { name: 'modified_by', type: 'uuid', isNullable: true },
         ],
       }),
     );
@@ -41,7 +41,7 @@ export class CreateOrderTable1753181759388 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'order',
       new TableForeignKey({
-        columnNames: ['companyId'],
+        columnNames: ['company_id'],
         referencedTableName: 'company',
         referencedColumnNames: ['id'],
         onDelete: 'CASCADE',
@@ -51,7 +51,7 @@ export class CreateOrderTable1753181759388 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'order',
       new TableForeignKey({
-        columnNames: ['userId'],
+        columnNames: ['user_id'],
         referencedTableName: 'user',
         referencedColumnNames: ['id'],
         onDelete: 'SET NULL',
@@ -61,7 +61,7 @@ export class CreateOrderTable1753181759388 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'order',
       new TableForeignKey({
-        columnNames: ['warehouseId'],
+        columnNames: ['warehouse_id'],
         referencedTableName: 'warehouse',
         referencedColumnNames: ['id'],
         onDelete: 'SET NULL',
@@ -71,7 +71,7 @@ export class CreateOrderTable1753181759388 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'order',
       new TableForeignKey({
-        columnNames: ['partnerId'],
+        columnNames: ['partner_id'],
         referencedTableName: 'partner',
         referencedColumnNames: ['id'],
         onDelete: 'SET NULL',
@@ -81,7 +81,7 @@ export class CreateOrderTable1753181759388 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'order',
       new TableForeignKey({
-        columnNames: ['modifiedBy'],
+        columnNames: ['modified_by'],
         referencedTableName: 'user',
         referencedColumnNames: ['id'],
         onDelete: 'SET NULL',
@@ -99,11 +99,11 @@ export class CreateOrderTable1753181759388 implements MigrationInterface {
       );
 
     const fks = [
-      dropFk('modifiedBy', 'user'),
-      dropFk('partnerId', 'partner'),
-      dropFk('warehouseId', 'warehouse'),
-      dropFk('userId', 'user'),
-      dropFk('companyId', 'company'),
+      dropFk('modified_by', 'user'),
+      dropFk('partner_id', 'partner'),
+      dropFk('warehouse_id', 'warehouse'),
+      dropFk('user_id', 'user'),
+      dropFk('company_id', 'company'),
     ];
 
     for (const fk of fks) {

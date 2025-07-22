@@ -20,7 +20,7 @@ export class CreateUserTable1753181724590 implements MigrationInterface {
             isPrimary: true,
             default: 'gen_random_uuid()',
           },
-          { name: 'companyId', type: 'uuid', isNullable: false },
+          { name: 'company_id', type: 'uuid', isNullable: false },
           { name: 'name', type: 'varchar', isNullable: false },
           { name: 'username', type: 'varchar', isNullable: false },
           { name: 'password', type: 'varchar', isNullable: false },
@@ -30,10 +30,10 @@ export class CreateUserTable1753181724590 implements MigrationInterface {
             isNullable: false,
             default: `'viewer'`,
           },
-          { name: 'createdAt', type: 'timestamptz', default: 'now()' },
-          { name: 'updatedAt', type: 'timestamptz', default: 'now()' },
-          { name: 'deletedAt', type: 'timestamptz', isNullable: true },
-          { name: 'modifiedBy', type: 'uuid', isNullable: true },
+          { name: 'created_at', type: 'timestamptz', default: 'now()' },
+          { name: 'updated_at', type: 'timestamptz', default: 'now()' },
+          { name: 'deleted_at', type: 'timestamptz', isNullable: true },
+          { name: 'modified_by', type: 'uuid', isNullable: true },
         ],
       }),
     );
@@ -41,7 +41,7 @@ export class CreateUserTable1753181724590 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'user',
       new TableForeignKey({
-        columnNames: ['companyId'],
+        columnNames: ['company_id'],
         referencedTableName: 'company',
         referencedColumnNames: ['id'],
         onDelete: 'CASCADE',
@@ -51,7 +51,7 @@ export class CreateUserTable1753181724590 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'user',
       new TableForeignKey({
-        columnNames: ['modifiedBy'],
+        columnNames: ['modified_by'],
         referencedTableName: 'user',
         referencedColumnNames: ['id'],
         onDelete: 'SET NULL',
@@ -64,13 +64,13 @@ export class CreateUserTable1753181724590 implements MigrationInterface {
 
     const companyFk = table?.foreignKeys.find(
       (fk) =>
-        fk.columnNames.includes('companyId') &&
+        fk.columnNames.includes('company_id') &&
         fk.referencedTableName === 'company',
     );
 
     const modifiedByFk = table?.foreignKeys.find(
       (fk) =>
-        fk.columnNames.includes('modifiedBy') &&
+        fk.columnNames.includes('modified_by') &&
         fk.referencedTableName === 'user',
     );
 

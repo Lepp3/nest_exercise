@@ -17,8 +17,8 @@ export class CreateOrderItemsTable1753181769776 implements MigrationInterface {
             isPrimary: true,
             default: 'gen_random_uuid()',
           },
-          { name: 'orderId', type: 'uuid', isNullable: false },
-          { name: 'productId', type: 'uuid', isNullable: false },
+          { name: 'order_id', type: 'uuid', isNullable: false },
+          { name: 'product_id', type: 'uuid', isNullable: false },
           {
             name: 'quantity',
             type: 'decimal',
@@ -26,10 +26,10 @@ export class CreateOrderItemsTable1753181769776 implements MigrationInterface {
             scale: 2,
             isNullable: false,
           },
-          { name: 'createdAt', type: 'timestamptz', default: 'now()' },
-          { name: 'updatedAt', type: 'timestamptz', default: 'now()' },
-          { name: 'deletedAt', type: 'timestamptz', isNullable: true },
-          { name: 'modifiedBy', type: 'uuid', isNullable: true },
+          { name: 'created_at', type: 'timestamptz', default: 'now()' },
+          { name: 'updated_at', type: 'timestamptz', default: 'now()' },
+          { name: 'deleted_at', type: 'timestamptz', isNullable: true },
+          { name: 'modified_by', type: 'uuid', isNullable: true },
         ],
       }),
     );
@@ -37,7 +37,7 @@ export class CreateOrderItemsTable1753181769776 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'order_items',
       new TableForeignKey({
-        columnNames: ['orderId'],
+        columnNames: ['order_id'],
         referencedTableName: 'order',
         referencedColumnNames: ['id'],
         onDelete: 'CASCADE',
@@ -47,7 +47,7 @@ export class CreateOrderItemsTable1753181769776 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'order_items',
       new TableForeignKey({
-        columnNames: ['productId'],
+        columnNames: ['product_id'],
         referencedTableName: 'product',
         referencedColumnNames: ['id'],
         onDelete: 'CASCADE',
@@ -57,7 +57,7 @@ export class CreateOrderItemsTable1753181769776 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'order_items',
       new TableForeignKey({
-        columnNames: ['modifiedBy'],
+        columnNames: ['modified_by'],
         referencedTableName: 'user',
         referencedColumnNames: ['id'],
         onDelete: 'SET NULL',
@@ -74,9 +74,9 @@ export class CreateOrderItemsTable1753181769776 implements MigrationInterface {
       );
 
     const fks = [
-      dropFk('modifiedBy', 'user'),
-      dropFk('productId', 'product'),
-      dropFk('orderId', 'order'),
+      dropFk('modified_by', 'user'),
+      dropFk('product_id', 'product'),
+      dropFk('order_id', 'order'),
     ];
 
     for (const fk of fks) {
