@@ -9,11 +9,9 @@ import {
 } from 'typeorm';
 import { User } from '../user/user.entity';
 import { Warehouse } from '../warehouse/warehouse.entity';
-
-export enum CompanyStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-}
+import { Partner } from '../partner/partner.entity';
+import { Product } from '../product/product.entity';
+import { Order } from '../order/order.entity';
 
 @Entity()
 export class Company {
@@ -23,13 +21,11 @@ export class Company {
   name: string;
   @Column()
   location: string;
-  @Column({ type: 'enum', enum: CompanyStatus })
-  status: CompanyStatus;
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
-  @DeleteDateColumn()
+  @DeleteDateColumn({ type: 'timestamptz' })
   deletedAt: Date;
   @Column({ nullable: true })
   modifiedBy: string;
@@ -37,4 +33,10 @@ export class Company {
   users: User[];
   @OneToMany(() => Warehouse, (warehouse) => warehouse.company)
   warehouses: Warehouse[];
+  @OneToMany(() => Partner, (partner) => partner.company)
+  partners: Partner[];
+  @OneToMany(() => Product, (product) => product.company)
+  products: Partner[];
+  @OneToMany(() => Order, (order) => order.company)
+  orders: Order[];
 }

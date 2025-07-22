@@ -4,32 +4,20 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
-  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
 } from 'typeorm';
-import { Company } from '../company/company.entity';
 import { Order } from '../order/order.entity';
-
-export enum SupportType {
-  LIQUID = 'liquid',
-  SOLID = 'solid',
-}
+import { Product } from '../product/product.entity';
 
 @Entity()
-export class Warehouse {
+export class OrderItems {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @Column()
-  name: string;
-  @Column({ type: 'enum', enum: SupportType })
-  supportType: SupportType;
-  @ManyToOne(() => Company, (company) => company.warehouses)
-  @JoinColumn({ name: 'companyId' })
-  company: Company;
-  @OneToMany(() => Order, (order) => order.warehouse)
-  orders: Order[];
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  quantity: string;
+
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
   @UpdateDateColumn({ type: 'timestamptz' })
@@ -38,4 +26,10 @@ export class Warehouse {
   deletedAt: Date;
   @Column({ nullable: true })
   modifiedBy: string;
+  @ManyToOne(() => Order, (order) => order.orderItems)
+  @JoinColumn({ name: 'orderId' })
+  order: Order;
+  @ManyToOne(() => Product, (product) => product.orderItems)
+  @JoinColumn({ name: 'productId' })
+  product: Order;
 }
