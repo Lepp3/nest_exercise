@@ -27,8 +27,6 @@ export class Company {
   updatedAt: Date;
   @DeleteDateColumn({ type: 'timestamptz' })
   deletedAt: Date;
-  @Column({ nullable: true })
-  modifiedBy: string;
   @OneToMany(() => User, (user) => user.company)
   users: User[];
   @OneToMany(() => Warehouse, (warehouse) => warehouse.company)

@@ -31,19 +31,19 @@ export class User {
   password: string;
   @Column({ type: 'enum', enum: UserRole, default: UserRole.VIEWER })
   role: UserRole;
-  @ManyToOne(() => Company, (company) => company.users)
-  @JoinColumn({ name: 'companyId' })
-  company: Company;
-  @Column({ nullable: true })
-  modifiedBy: string;
-  @OneToMany(() => Order, (order) => order.user)
-  orders: Order[];
-  @OneToMany(() => Invoice, (invoice) => invoice.user)
-  invoices: Invoice[];
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
   @DeleteDateColumn({ type: 'timestamptz' })
   deletedAt: Date;
+  @Column({ nullable: true })
+  modifiedBy: string;
+  @ManyToOne(() => Company, (company) => company.users)
+  @JoinColumn({ name: 'companyId' })
+  company: Company;
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
+  @OneToMany(() => Invoice, (invoice) => invoice.user)
+  invoices: Invoice[];
 }

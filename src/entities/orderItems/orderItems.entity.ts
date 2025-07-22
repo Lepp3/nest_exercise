@@ -17,7 +17,6 @@ export class OrderItems {
   id: string;
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   quantity: string;
-
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
   @UpdateDateColumn({ type: 'timestamptz' })

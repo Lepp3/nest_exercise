@@ -27,7 +27,7 @@ export class Order {
   id: string;
   @Column({ type: 'enum', enum: OrderType })
   type: OrderType;
-  @Column({ type: 'date' })
+  @Column({ type: 'date', default: () => 'CURRENT_DATE' })
   date: Date;
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;

@@ -15,7 +15,7 @@ import { Order } from '../order/order.entity';
 export class Invoice {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @Column({ type: 'date' })
+  @Column({ type: 'date', default: () => 'CURRENT_DATE' })
   date: Date;
   @Column()
   invoiceNumber: string;
