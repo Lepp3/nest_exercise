@@ -34,7 +34,7 @@ export class Product {
   @Column({ nullable: true })
   modifiedBy: string;
   @ManyToOne(() => Company, (company) => company.products)
-  @JoinColumn({ name: 'companyId' })
+  @JoinColumn({ name: 'company_id' })
   company: Company;
   @OneToMany(() => OrderItems, (orderItem) => orderItem.product)
   orderItems: OrderItems[];

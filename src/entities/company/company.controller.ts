@@ -6,11 +6,14 @@ import {
   Delete,
   Param,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import { Company } from './company.entity';
 import { CompanyService } from './company.service';
 import { type CreateCompanyDto, UpdateCompanyDto } from './company.service';
+import { JwtAuthGuard } from 'src/guards/authGuard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('company')
 export class CompanyController {
   constructor(private readonly companyService: CompanyService) {}

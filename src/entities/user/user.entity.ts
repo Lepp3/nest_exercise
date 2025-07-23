@@ -27,7 +27,7 @@ export class User {
   name: string;
   @Column()
   username: string;
-  @Column()
+  @Column({ select: false })
   password: string;
   @Column({ type: 'enum', enum: UserRole, default: UserRole.VIEWER })
   role: UserRole;
@@ -39,9 +39,11 @@ export class User {
   deletedAt: Date;
   @Column({ nullable: true })
   modifiedBy: string;
+  @Column({ name: 'company_id' })
+  companyId: string;
   @ManyToOne(() => Company, (company) => company.users)
-  @JoinColumn({ name: 'companyId' })
-  company: Company;
+  @JoinColumn({ name: 'company_id' })
+  company?: Company;
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
   @OneToMany(() => Invoice, (invoice) => invoice.user)

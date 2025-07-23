@@ -28,9 +28,9 @@ export class Invoice {
   @Column({ nullable: true })
   modifiedBy: string;
   @ManyToOne(() => User, (user) => user.invoices)
-  @JoinColumn({ name: 'userId' })
+  @JoinColumn({ name: 'user_id' })
   user: User;
   @ManyToOne(() => Order, (order) => order.invoices)
-  @JoinColumn({ name: 'orderId' })
+  @JoinColumn({ name: 'order_id' })
   order: Order;
 }

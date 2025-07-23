@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import configuration from './config/configuration';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { CompanyModule } from './entities/company/company.module';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './entities/user/user.module';
 
 @Module({
   imports: [
@@ -29,7 +31,8 @@ import { CompanyModule } from './entities/company/company.module';
           username: db?.username,
           password: db?.password,
           database: db?.name,
-          autoLoadEntities: true,
+          // autoLoadEntities: true,
+          entities: [__dirname + '/**/*.entity.{ts,js}'],
           synchronize: false,
           retryAttempts: 4,
           logging: true,
@@ -38,6 +41,8 @@ import { CompanyModule } from './entities/company/company.module';
       },
     }),
     CompanyModule,
+    AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

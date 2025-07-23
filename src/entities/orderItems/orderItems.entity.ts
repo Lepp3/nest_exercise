@@ -26,7 +26,7 @@ export class OrderItems {
   @Column({ nullable: true })
   modifiedBy: string;
   @ManyToOne(() => Order, (order) => order.orderItems)
-  @JoinColumn({ name: 'orderId' })
+  @JoinColumn({ name: 'order_id' })
   order: Order;
   @ManyToOne(() => Product, (product) => product.orderItems)
   @JoinColumn({ name: 'productId' })

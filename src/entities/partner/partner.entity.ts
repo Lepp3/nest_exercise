@@ -34,7 +34,7 @@ export class Partner {
   @Column({ nullable: true })
   modifiedBy: string;
   @ManyToOne(() => Company, (company) => company.partners)
-  @JoinColumn({ name: 'companyId' })
+  @JoinColumn({ name: 'company_id' })
   company: Company;
   @OneToMany(() => Order, (order) => order.warehouse)
   orders: Order[];

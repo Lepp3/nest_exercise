@@ -38,16 +38,16 @@ export class Order {
   @Column({ nullable: true })
   modifiedBy: string;
   @ManyToOne(() => Company, (company) => company.orders)
-  @JoinColumn({ name: 'companyId' })
+  @JoinColumn({ name: 'company_id' })
   company: Company;
   @ManyToOne(() => User, (user) => user.orders)
-  @JoinColumn({ name: 'userId' })
+  @JoinColumn({ name: 'user_id' })
   user: User;
   @ManyToOne(() => Warehouse, (warehouse) => warehouse.orders)
-  @JoinColumn({ name: 'warehouseId' })
+  @JoinColumn({ name: 'warehouse_id' })
   warehouse: Warehouse;
   @ManyToOne(() => Partner, (partner) => partner.orders)
-  @JoinColumn({ name: 'partnerId' })
+  @JoinColumn({ name: 'partner_id' })
   partner: Partner;
   @OneToMany(() => OrderItems, (orderItem) => orderItem.order)
   orderItems: OrderItems[];
