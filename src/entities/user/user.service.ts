@@ -1,7 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
+import { UserRole } from './user.entity';
 
 @Injectable()
 export class UserService {
@@ -28,16 +33,35 @@ export class UserService {
   }
 
   async create(data: Partial<User>) {
-    console.log('data from user service', data);
     const user = await this.userRepo.save(data);
     return user;
   }
 
-  // async update({ id, data }: { id: string; data: Partial<User> }) {
-  //   const user = await this.getById(id);
-  //   if (!user) {
-  //     throw new Error('User with this id does not exist');
-  //   }
-  //   return this.userRepo.update(data);
-  // }
+  async update(id: string, data: Partial<User>, reqUser: { role: UserRole }) {
+    const user = await this.getById(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    if (reqUser.role === UserRole.VIEWER) {
+      throw new ForbiddenException('Viewer role cannot update users');
+    }
+    Object.assign(user, data);
+    return this.userRepo.save(user);
+  }
+
+  async softDelete(id: string) {
+    const user = await this.getById(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return this.userRepo.softDelete(id);
+  }
+
+  async delete(id: string) {
+    const user = await this.getById(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return this.userRepo.delete(id);
+  }
 }
