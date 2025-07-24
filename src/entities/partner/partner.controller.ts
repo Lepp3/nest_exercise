@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { BaseController } from 'src/common/base.controller';
 import { PartnerService } from './partner.service';
 import { Partner } from './partner.entity';
@@ -14,5 +14,10 @@ export class PartnerController extends BaseController<
 > {
   constructor(protected readonly partnerService: PartnerService) {
     super(partnerService);
+  }
+
+  @Get('loyal-customer')
+  getMostLoyalCustomer() {
+    return this.partnerService.getMostLoyalCustomer();
   }
 }
