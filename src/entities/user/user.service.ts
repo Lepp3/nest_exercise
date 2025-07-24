@@ -1,30 +1,17 @@
-import {
-  Injectable,
-  ForbiddenException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './user.entity';
 import { Repository } from 'typeorm';
-import { UserRole } from './user.entity';
+import { User } from './user.entity';
+import { BaseService } from 'src/common/base.service';
 
 @Injectable()
-export class UserService {
-  constructor(
-    @InjectRepository(User)
-    private userRepo: Repository<User>,
-  ) {}
-
-  async getAll() {
-    return this.userRepo.find();
-  }
-
-  async getById(userId: string) {
-    return this.userRepo.findOne({ where: { id: userId } });
+export class UserService extends BaseService<User> {
+  constructor(@InjectRepository(User) repo: Repository<User>) {
+    super(repo, 'User');
   }
 
   async getByUsername(username: string, withPassword = false) {
-    return this.userRepo.findOne({
+    return this.repo.findOne({
       where: { username },
       select: withPassword
         ? ['id', 'username', 'password']
@@ -33,35 +20,18 @@ export class UserService {
   }
 
   async create(data: Partial<User>) {
-    const user = await this.userRepo.save(data);
-    return user;
+    return super.create(data);
   }
 
-  async update(id: string, data: Partial<User>, reqUser: { role: UserRole }) {
-    const user = await this.getById(id);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    if (reqUser.role === UserRole.VIEWER) {
-      throw new ForbiddenException('Viewer role cannot update users');
-    }
-    Object.assign(user, data);
-    return this.userRepo.save(user);
+  async update(id: string, data: Partial<User>) {
+    return super.update(id, data);
   }
 
   async softDelete(id: string) {
-    const user = await this.getById(id);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return this.userRepo.softDelete(id);
+    return super.softDelete(id);
   }
 
   async delete(id: string) {
-    const user = await this.getById(id);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return this.userRepo.delete(id);
+    return super.delete(id);
   }
 }

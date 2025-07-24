@@ -10,6 +10,9 @@ import {
 import { Company } from './company.entity';
 import { CompanyService } from './company.service';
 import { type CreateCompanyDto, UpdateCompanyDto } from './company.service';
+import { Roles } from 'src/decorators/roles.decorator';
+import { UserRole } from '../user/user.entity';
+import { DeleteResult } from 'typeorm';
 
 @Controller('company')
 export class CompanyController {
@@ -17,7 +20,7 @@ export class CompanyController {
 
   @Get()
   findAll(): Promise<Company[]> {
-    return this.companyService.findAll();
+    return this.companyService.getAll();
   }
 
   @Post()
@@ -27,7 +30,7 @@ export class CompanyController {
 
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Company> {
-    return this.companyService.findOne(id);
+    return this.companyService.getById(id);
   }
 
   @Put(':id')
@@ -38,8 +41,15 @@ export class CompanyController {
     return this.companyService.update(id, dto);
   }
 
-  @Delete(':id')
-  delete(@Param('id') id: string): Promise<void> {
+  @Delete(':id/hard')
+  @Roles(UserRole.OWNER)
+  delete(@Param('id') id: string): Promise<DeleteResult> {
     return this.companyService.delete(id);
+  }
+
+  @Delete(':id/soft')
+  @Roles(UserRole.OPERATOR, UserRole.OWNER)
+  softDelete(@Param('id') id: string): Promise<DeleteResult> {
+    return this.companyService.softDelete(id);
   }
 }

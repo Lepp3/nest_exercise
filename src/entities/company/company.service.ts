@@ -1,50 +1,36 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Company } from './company.entity';
 import { z } from 'zod';
 import { CreateCompanySchema, UpdateCompanySchema } from './company.schema';
+import { BaseService } from 'src/common/base.service';
 
 export type CreateCompanyDto = z.infer<typeof CreateCompanySchema>;
 export type UpdateCompanyDto = z.infer<typeof UpdateCompanySchema>;
 
 @Injectable()
-export class CompanyService {
-  constructor(
-    @InjectRepository(Company)
-    private readonly companyRepo: Repository<Company>,
-  ) {}
-  async findAll(): Promise<Company[]> {
-    return this.companyRepo.find();
+export class CompanyService extends BaseService<Company> {
+  constructor(@InjectRepository(Company) repo: Repository<Company>) {
+    super(repo, 'Company');
   }
 
   async create(dto: CreateCompanyDto): Promise<Company> {
-    const existing = await this.companyRepo.findOne({
+    const existing = await this.repo.findOne({
       where: { name: dto.name },
     });
     if (existing)
       throw new ConflictException(
         `Company with name '${dto.name}' already exists`,
       );
-    const company = this.companyRepo.create(dto);
-    return this.companyRepo.save(company);
-  }
 
-  async findOne(id: string): Promise<Company> {
-    const company = await this.companyRepo.findOne({ where: { id } });
-    if (!company) throw new NotFoundException(`Company ${id} not found`);
-    return company;
+    return super.create(dto);
   }
 
   async update(id: string, dto: UpdateCompanyDto): Promise<Company> {
-    const company = await this.findOne(id);
-    if (!company) throw new NotFoundException(`Company ${id} not found`);
+    const company = await this.getById(id);
     if (dto.name !== company.name) {
-      const existing = await this.companyRepo.findOne({
+      const existing = await this.repo.findOne({
         where: { name: dto.name },
       });
       if (existing)
@@ -52,12 +38,15 @@ export class CompanyService {
           `Company with name '${dto.name}' already exists`,
         );
     }
-    Object.assign(company, dto);
-    return this.companyRepo.save(company);
+
+    return super.update(id, dto);
   }
 
-  async delete(id: string): Promise<void> {
-    const company = await this.findOne(id);
-    await this.companyRepo.softRemove(company);
+  async softDelete(id: string) {
+    return super.softDelete(id);
+  }
+
+  async delete(id: string) {
+    return super.delete(id);
   }
 }
