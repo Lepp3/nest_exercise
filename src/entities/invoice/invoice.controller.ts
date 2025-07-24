@@ -3,7 +3,9 @@ import { BaseController } from 'src/common/base.controller';
 import { InvoiceService } from './invoice.service';
 import { Invoice } from './invoice.entity';
 import { CreateInvoiceDto, UpdateInvoiceDto } from './invoice.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth('Authorization')
 @Controller('invoice')
 export class InvoiceController extends BaseController<
   Invoice,

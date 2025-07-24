@@ -1,5 +1,5 @@
 import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { BaseEntity } from 'src/entities/base.entity';
+import { BaseEntity } from 'src/common/base.entity';
 import { Company } from '../company/company.entity';
 import { Order } from '../order/order.entity';
 
@@ -13,7 +13,7 @@ export class Partner extends BaseEntity {
   @Column()
   name: string;
 
-  @Column({ type: 'enum', enum: PartnerType })
+  @Column({ name: 'partner_type', type: 'enum', enum: PartnerType })
   partnerType: PartnerType;
 
   @Column({ name: 'company_id', type: 'uuid' })

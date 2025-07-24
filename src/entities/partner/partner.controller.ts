@@ -3,7 +3,9 @@ import { BaseController } from 'src/common/base.controller';
 import { PartnerService } from './partner.service';
 import { Partner } from './partner.entity';
 import { CreatePartnerDto, UpdatePartnerDto } from './partner.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth('Authorization')
 @Controller('partner')
 export class PartnerController extends BaseController<
   Partner,

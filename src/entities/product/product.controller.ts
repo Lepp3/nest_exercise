@@ -3,7 +3,9 @@ import { BaseController } from 'src/common/base.controller';
 import { ProductService } from './product.service';
 import { Product } from './product.entity';
 import { CreateProductDto, UpdateProductDto } from './product.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth('Authorization')
 @Controller('product')
 export class ProductController extends BaseController<
   Product,

@@ -1,5 +1,5 @@
 import { Entity, Column, OneToMany } from 'typeorm';
-import { BaseEntity } from 'src/entities/base.entity';
+import { BaseEntity } from 'src/common/base.entity';
 import { User } from '../user/user.entity';
 import { Warehouse } from '../warehouse/warehouse.entity';
 import { Partner } from '../partner/partner.entity';

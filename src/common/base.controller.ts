@@ -11,7 +11,7 @@ import { BaseService } from './base.service';
 import { Roles } from 'src/decorators/roles.decorator';
 import { UserRole } from 'src/entities/user/user.entity';
 import { DeleteResult, DeepPartial } from 'typeorm';
-import { BaseEntity } from 'src/entities/base.entity';
+import { BaseEntity } from 'src/common/base.entity';
 
 @Controller()
 export abstract class BaseController<

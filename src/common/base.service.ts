@@ -1,6 +1,6 @@
 import { NotFoundException } from '@nestjs/common';
 import { Repository, DeepPartial, FindOptionsWhere } from 'typeorm';
-import { BaseEntity } from 'src/entities/base.entity';
+import { BaseEntity } from 'src/common/base.entity';
 
 export abstract class BaseService<T extends BaseEntity> {
   constructor(
