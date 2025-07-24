@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { UserRole } from './user.entity';
+import { createZodDto } from 'nestjs-zod';
 
 export const CreateUserSchema = z.object({
   name: z.string().min(2).optional(),
@@ -12,3 +13,5 @@ export const CreateUserSchema = z.object({
 export const UpdateUserSchema = CreateUserSchema.partial();
 
 export type RegisterUserInput = z.infer<typeof CreateUserSchema>;
+export class CreateUserDto extends createZodDto(CreateUserSchema) {}
+export class UpdateUserDto extends createZodDto(UpdateUserSchema) {}

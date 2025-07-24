@@ -6,8 +6,8 @@ import { BaseService } from 'src/common/base.service';
 import { z } from 'zod';
 import { CreateInvoiceSchema, UpdateInvoiceSchema } from './invoice.schema';
 
-export type CreateInvoiceDto = z.infer<typeof CreateInvoiceSchema>;
-export type UpdateInvoiceDto = z.infer<typeof UpdateInvoiceSchema>;
+export type CreateInvoiceInput = z.infer<typeof CreateInvoiceSchema>;
+export type UpdateInvoiceInput = z.infer<typeof UpdateInvoiceSchema>;
 
 @Injectable()
 export class InvoiceService extends BaseService<Invoice> {
@@ -15,11 +15,11 @@ export class InvoiceService extends BaseService<Invoice> {
     super(repo, 'Invoice');
   }
 
-  async create(dto: CreateInvoiceDto) {
+  async create(dto: CreateInvoiceInput) {
     return super.create(dto);
   }
 
-  async update(id: string, dto: UpdateInvoiceDto) {
+  async update(id: string, dto: UpdateInvoiceInput) {
     return super.update(id, dto);
   }
 

@@ -1,13 +1,11 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller, Post, Put, Body, Param } from '@nestjs/common';
 import { BaseController } from 'src/common/base.controller';
 import { UserService } from './user.service';
 import { User } from './user.entity';
-import { CreateUserDto, UpdateUserDto } from './user.service';
-import { JwtAuthGuard } from 'src/guards/authGuard';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { CreateUserDto, UpdateUserDto } from './update-user.schema';
+import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 
 @ApiBearerAuth('Authorization')
-@UseGuards(JwtAuthGuard)
 @Controller('user')
 export class UserController extends BaseController<
   User,
@@ -16,5 +14,16 @@ export class UserController extends BaseController<
 > {
   constructor(protected readonly userService: UserService) {
     super(userService);
+  }
+  @Post()
+  @ApiBody({ type: CreateUserDto })
+  override create(@Body() dto: CreateUserDto) {
+    return super.create(dto);
+  }
+
+  @Put(':id')
+  @ApiBody({ type: UpdateUserDto })
+  override update(@Param() id: string, @Body() dto: UpdateUserDto) {
+    return super.update(id, dto);
   }
 }

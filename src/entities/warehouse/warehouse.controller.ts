@@ -1,9 +1,10 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post, Put, Body, Param } from '@nestjs/common';
 import { BaseController } from 'src/common/base.controller';
 import { WarehouseService } from './warehouse.service';
 import { Warehouse } from './warehouse.entity';
-import { CreateWarehouseDto, UpdateWarehouseDto } from './warehouse.service';
-
+import { CreateWarehouseDto, UpdateWarehouseDto } from './warehouse.schema';
+import { ApiBody, ApiBearerAuth } from '@nestjs/swagger';
+@ApiBearerAuth('Authorization')
 @Controller('warehouse')
 export class WarehouseController extends BaseController<
   Warehouse,
@@ -12,5 +13,17 @@ export class WarehouseController extends BaseController<
 > {
   constructor(protected readonly warehouseService: WarehouseService) {
     super(warehouseService);
+  }
+
+  @Post()
+  @ApiBody({ type: CreateWarehouseDto })
+  override create(@Body() dto: CreateWarehouseDto) {
+    return super.create(dto);
+  }
+
+  @Put(':id')
+  @ApiBody({ type: UpdateWarehouseDto })
+  override update(@Param() id: string, @Body() dto: UpdateWarehouseDto) {
+    return super.update(id, dto);
   }
 }

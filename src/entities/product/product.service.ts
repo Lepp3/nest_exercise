@@ -6,8 +6,8 @@ import { BaseService } from 'src/common/base.service';
 import { z } from 'zod';
 import { CreateProductSchema, UpdateProductSchema } from './product.schema';
 
-export type CreateProductDto = z.infer<typeof CreateProductSchema>;
-export type UpdateProductDto = z.infer<typeof UpdateProductSchema>;
+export type CreateProductInput = z.infer<typeof CreateProductSchema>;
+export type UpdateProductInput = z.infer<typeof UpdateProductSchema>;
 
 @Injectable()
 export class ProductService extends BaseService<Product> {
@@ -15,11 +15,11 @@ export class ProductService extends BaseService<Product> {
     super(repo, 'Product');
   }
 
-  async create(dto: CreateProductDto) {
+  async create(dto: CreateProductInput) {
     return super.create(dto);
   }
 
-  async update(id: string, dto: UpdateProductDto) {
+  async update(id: string, dto: UpdateProductInput) {
     return super.update(id, dto);
   }
 

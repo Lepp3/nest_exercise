@@ -7,8 +7,8 @@ import { z } from 'zod';
 import { Order } from '../order/order.entity';
 import { CreatePartnerSchema, UpdatePartnerSchema } from './partner.schema';
 
-export type CreatePartnerDto = z.infer<typeof CreatePartnerSchema>;
-export type UpdatePartnerDto = z.infer<typeof UpdatePartnerSchema>;
+export type CreatePartnerInput = z.infer<typeof CreatePartnerSchema>;
+export type UpdatePartnerInput = z.infer<typeof UpdatePartnerSchema>;
 
 export interface MostLoyalCustomer {
   companyId: string;
@@ -25,11 +25,11 @@ export class PartnerService extends BaseService<Partner> {
     super(repo, 'Partner');
   }
 
-  async create(dto: CreatePartnerDto) {
+  async create(dto: CreatePartnerInput) {
     return super.create(dto);
   }
 
-  async update(id: string, dto: UpdatePartnerDto) {
+  async update(id: string, dto: UpdatePartnerInput) {
     return super.update(id, dto);
   }
 

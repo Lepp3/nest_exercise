@@ -7,13 +7,17 @@ import { Public } from 'src/decorators/public.decorator';
 import {
   CreateUserSchema,
   RegisterUserInput,
+  CreateUserDto,
 } from 'src/entities/user/update-user.schema';
+import { LoginDto } from './login.schema';
+import { ApiBody } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
+  @ApiBody({ type: CreateUserDto })
   @Post('register')
   register(
     @Body(new ZodValidationPipe(CreateUserSchema)) body: RegisterUserInput,
@@ -22,6 +26,7 @@ export class AuthController {
   }
   @Public()
   @Post('login')
+  @ApiBody({ type: LoginDto })
   login(@Body(new ZodValidationPipe(LoginSchema)) body: LoginInput) {
     return this.authService.login(body);
   }

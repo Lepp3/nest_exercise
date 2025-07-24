@@ -9,8 +9,8 @@ import {
   UpdateWarehouseSchema,
 } from './warehouse.schema';
 
-export type CreateWarehouseDto = z.infer<typeof CreateWarehouseSchema>;
-export type UpdateWarehouseDto = z.infer<typeof UpdateWarehouseSchema>;
+export type CreateWarehouseInput = z.infer<typeof CreateWarehouseSchema>;
+export type UpdateWarehouseInput = z.infer<typeof UpdateWarehouseSchema>;
 
 @Injectable()
 export class WarehouseService extends BaseService<Warehouse> {
@@ -18,11 +18,11 @@ export class WarehouseService extends BaseService<Warehouse> {
     super(repo, 'Warehouse');
   }
 
-  async create(dto: CreateWarehouseDto) {
+  async create(dto: CreateWarehouseInput) {
     return super.create(dto);
   }
 
-  async update(id: string, dto: UpdateWarehouseDto) {
+  async update(id: string, dto: UpdateWarehouseInput) {
     return super.update(id, dto);
   }
 

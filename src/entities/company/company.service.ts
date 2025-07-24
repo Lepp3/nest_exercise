@@ -6,8 +6,8 @@ import { z } from 'zod';
 import { CreateCompanySchema, UpdateCompanySchema } from './company.schema';
 import { BaseService } from 'src/common/base.service';
 
-export type CreateCompanyDto = z.infer<typeof CreateCompanySchema>;
-export type UpdateCompanyDto = z.infer<typeof UpdateCompanySchema>;
+export type CreateCompanyInput = z.infer<typeof CreateCompanySchema>;
+export type UpdateCompanyInput = z.infer<typeof UpdateCompanySchema>;
 
 @Injectable()
 export class CompanyService extends BaseService<Company> {
@@ -15,7 +15,7 @@ export class CompanyService extends BaseService<Company> {
     super(repo, 'Company');
   }
 
-  async create(dto: CreateCompanyDto): Promise<Company> {
+  async create(dto: CreateCompanyInput): Promise<Company> {
     const existing = await this.repo.findOne({
       where: { name: dto.name },
     });
@@ -27,7 +27,7 @@ export class CompanyService extends BaseService<Company> {
     return super.create(dto);
   }
 
-  async update(id: string, dto: UpdateCompanyDto): Promise<Company> {
+  async update(id: string, dto: UpdateCompanyInput): Promise<Company> {
     const company = await this.getById(id);
     if (dto.name !== company.name) {
       const existing = await this.repo.findOne({

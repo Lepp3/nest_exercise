@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { createZodDto } from 'nestjs-zod';
 
 export const CreateOrderItemsSchema = z.object({
   id: z.uuid().optional(),
@@ -7,3 +8,5 @@ export const CreateOrderItemsSchema = z.object({
 });
 
 export const UpdateOrderItemsSchema = CreateOrderItemsSchema.partial();
+export class UpdateOrderItemsDto extends createZodDto(UpdateOrderItemsSchema) {}
+export class CreateOrderItemsDto extends createZodDto(CreateOrderItemsSchema) {}

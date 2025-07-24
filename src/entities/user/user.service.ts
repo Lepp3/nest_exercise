@@ -6,8 +6,8 @@ import { BaseService } from 'src/common/base.service';
 import { z } from 'zod';
 import { CreateUserSchema, UpdateUserSchema } from './update-user.schema';
 
-export type CreateUserDto = z.infer<typeof CreateUserSchema>;
-export type UpdateUserDto = z.infer<typeof UpdateUserSchema>;
+export type CreateUserInput = z.infer<typeof CreateUserSchema>;
+export type UpdateUserInput = z.infer<typeof UpdateUserSchema>;
 
 @Injectable()
 export class UserService extends BaseService<User> {
@@ -24,11 +24,11 @@ export class UserService extends BaseService<User> {
     });
   }
 
-  async create(dto: CreateUserDto) {
+  async create(dto: CreateUserInput) {
     return super.create(dto);
   }
 
-  async update(id: string, dto: UpdateUserDto) {
+  async update(id: string, dto: UpdateUserInput) {
     return super.update(id, dto);
   }
 

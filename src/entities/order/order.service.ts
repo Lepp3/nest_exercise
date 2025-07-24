@@ -6,8 +6,8 @@ import { BaseService } from 'src/common/base.service';
 import { z } from 'zod';
 import { CreateOrderSchema, UpdateOrderSchema } from './order.schema';
 
-export type CreateOrderDto = z.infer<typeof CreateOrderSchema>;
-export type UpdateOrderDto = z.infer<typeof UpdateOrderSchema>;
+export type CreateOrderInput = z.infer<typeof CreateOrderSchema>;
+export type UpdateOrderInput = z.infer<typeof UpdateOrderSchema>;
 
 @Injectable()
 export class OrderService extends BaseService<Order> {
@@ -15,11 +15,11 @@ export class OrderService extends BaseService<Order> {
     super(repo, 'Order');
   }
 
-  async create(dto: CreateOrderDto) {
+  async create(dto: CreateOrderInput) {
     return super.create(dto);
   }
 
-  async update(id: string, dto: UpdateOrderDto) {
+  async update(id: string, dto: UpdateOrderInput) {
     return super.update(id, dto);
   }
 
