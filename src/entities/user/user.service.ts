@@ -3,6 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { BaseService } from 'src/common/base.service';
+import { z } from 'zod';
+import { CreateUserSchema, UpdateUserSchema } from './update-user.schema';
+
+export type CreateUserDto = z.infer<typeof CreateUserSchema>;
+export type UpdateUserDto = z.infer<typeof UpdateUserSchema>;
 
 @Injectable()
 export class UserService extends BaseService<User> {
@@ -19,12 +24,12 @@ export class UserService extends BaseService<User> {
     });
   }
 
-  async create(data: Partial<User>) {
-    return super.create(data);
+  async create(dto: CreateUserDto) {
+    return super.create(dto);
   }
 
-  async update(id: string, data: Partial<User>) {
-    return super.update(id, data);
+  async update(id: string, dto: UpdateUserDto) {
+    return super.update(id, dto);
   }
 
   async softDelete(id: string) {

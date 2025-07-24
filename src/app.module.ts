@@ -7,6 +7,8 @@ import configuration from './config/configuration';
 import { CompanyModule } from './entities/company/company.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './entities/user/user.module';
+import { RolesGuard } from './guards/roles.guard';
+import { JwtAuthGuard } from './guards/authGuard';
 
 @Module({
   imports: [
@@ -30,8 +32,8 @@ import { UserModule } from './entities/user/user.module';
           username: db?.username,
           password: db?.password,
           database: db?.name,
-          autoLoadEntities: true,
-          // entities: [__dirname + '/**/*.entity.{ts,js}'],
+          // autoLoadEntities: true,
+          entities: [__dirname + '/**/*.entity.{ts,js}'],
           synchronize: false,
           retryAttempts: 4,
           logging: true,
@@ -43,6 +45,6 @@ import { UserModule } from './entities/user/user.module';
     UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, RolesGuard, JwtAuthGuard],
 })
 export class AppModule {}

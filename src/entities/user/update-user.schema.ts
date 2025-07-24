@@ -1,11 +1,14 @@
 import { z } from 'zod';
 import { UserRole } from './user.entity';
 
-export const UpdateUserSchema = z.object({
+export const CreateUserSchema = z.object({
   name: z.string().min(2).optional(),
-  username: z.string().min(4).optional(),
-  password: z.string().min(6).optional(),
-  role: z.enum(UserRole).optional(),
+  username: z.string().min(4),
+  password: z.string().min(6),
+  role: z.enum(UserRole),
+  companyId: z.uuid(),
 });
 
-export type UpdateUserInput = z.infer<typeof UpdateUserSchema>;
+export const UpdateUserSchema = CreateUserSchema.partial();
+
+export type RegisterUserInput = z.infer<typeof CreateUserSchema>;
