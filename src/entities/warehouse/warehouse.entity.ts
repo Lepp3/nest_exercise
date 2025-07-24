@@ -1,14 +1,5 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  JoinColumn,
-  OneToMany,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-} from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { BaseEntity } from 'src/entities/base.entity';
 import { Company } from '../company/company.entity';
 import { Order } from '../order/order.entity';
 
@@ -18,24 +9,20 @@ export enum SupportType {
 }
 
 @Entity()
-export class Warehouse {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+export class Warehouse extends BaseEntity {
   @Column()
   name: string;
+
   @Column({ type: 'enum', enum: SupportType })
   supportType: SupportType;
+
+  @Column({ name: 'company_id', type: 'uuid' })
+  companyId: string;
+
   @ManyToOne(() => Company, (company) => company.warehouses)
-  @JoinColumn({ name: 'companyId' })
+  @JoinColumn({ name: 'company_id' })
   company: Company;
+
   @OneToMany(() => Order, (order) => order.warehouse)
   orders: Order[];
-  @CreateDateColumn({ type: 'timestamptz' })
-  createdAt: Date;
-  @UpdateDateColumn({ type: 'timestamptz' })
-  updatedAt: Date;
-  @DeleteDateColumn({ type: 'timestamptz' })
-  deletedAt: Date;
-  @Column({ nullable: true })
-  modifiedBy: string;
 }

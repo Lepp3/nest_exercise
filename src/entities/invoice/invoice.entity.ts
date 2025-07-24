@@ -1,35 +1,26 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  JoinColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-} from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { BaseEntity } from 'src/entities/base.entity';
 import { User } from '../user/user.entity';
 import { Order } from '../order/order.entity';
 
 @Entity()
-export class Invoice {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+export class Invoice extends BaseEntity {
   @Column({ type: 'date', default: () => 'CURRENT_DATE' })
   date: Date;
+
   @Column()
   invoiceNumber: string;
-  @CreateDateColumn({ type: 'timestamptz' })
-  createdAt: Date;
-  @UpdateDateColumn({ type: 'timestamptz' })
-  updatedAt: Date;
-  @DeleteDateColumn({ type: 'timestamptz' })
-  deletedAt: Date;
-  @Column({ nullable: true })
-  modifiedBy: string;
+
+  @Column({ name: 'user_id', type: 'uuid' })
+  userId: string;
+
   @ManyToOne(() => User, (user) => user.invoices)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @Column({ name: 'order_id', type: 'uuid' })
+  orderId: string;
+
   @ManyToOne(() => Order, (order) => order.invoices)
   @JoinColumn({ name: 'order_id' })
   order: Order;
