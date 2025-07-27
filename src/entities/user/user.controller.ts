@@ -29,6 +29,7 @@ export class UserController extends BaseController<
           name: '',
           userName: '',
           role: '',
+          password: '',
         },
       },
     },

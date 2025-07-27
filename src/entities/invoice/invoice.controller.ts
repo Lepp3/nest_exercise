@@ -5,6 +5,8 @@ import { Invoice } from './invoice.entity';
 import { CreateInvoiceDto, UpdateInvoiceDto } from './invoice.schema';
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { CurrentUser, AuthUser } from 'src/decorators/currentUser.decorator';
+import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
+import { CreateInvoiceSchema, UpdateInvoiceSchema } from './invoice.schema';
 @ApiBearerAuth('Authorization')
 @Controller('invoice')
 export class InvoiceController extends BaseController<
@@ -31,7 +33,7 @@ export class InvoiceController extends BaseController<
   })
   override create(
     @CurrentUser() user: AuthUser,
-    @Body() dto: CreateInvoiceDto,
+    @Body(new ZodValidationPipe(CreateInvoiceSchema)) dto: CreateInvoiceDto,
   ) {
     return super.create(user, dto);
   }
@@ -52,7 +54,7 @@ export class InvoiceController extends BaseController<
   override update(
     @CurrentUser() user: AuthUser,
     @Param('id') id: string,
-    @Body() dto: UpdateInvoiceDto,
+    @Body(new ZodValidationPipe(UpdateInvoiceSchema)) dto: UpdateInvoiceDto,
   ) {
     return super.update(user, id, dto);
   }

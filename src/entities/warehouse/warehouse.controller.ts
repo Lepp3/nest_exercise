@@ -2,9 +2,15 @@ import { Controller, Post, Put, Body, Param, Get } from '@nestjs/common';
 import { BaseController } from 'src/common/base.controller';
 import { WarehouseService } from './warehouse.service';
 import { Warehouse } from './warehouse.entity';
-import { CreateWarehouseDto, UpdateWarehouseDto } from './warehouse.schema';
+import {
+  CreateWarehouseDto,
+  CreateWarehouseSchema,
+  UpdateWarehouseDto,
+  UpdateWarehouseSchema,
+} from './warehouse.schema';
 import { ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { CurrentUser, AuthUser } from 'src/decorators/currentUser.decorator';
+import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 @ApiBearerAuth('Authorization')
 @Controller('warehouse')
 export class WarehouseController extends BaseController<
@@ -36,7 +42,7 @@ export class WarehouseController extends BaseController<
   })
   override create(
     @CurrentUser() user: AuthUser,
-    @Body() dto: CreateWarehouseDto,
+    @Body(new ZodValidationPipe(CreateWarehouseSchema)) dto: CreateWarehouseDto,
   ) {
     return super.create(user, dto);
   }
@@ -57,7 +63,7 @@ export class WarehouseController extends BaseController<
   override update(
     @CurrentUser() user: AuthUser,
     @Param('id') id: string,
-    @Body() dto: UpdateWarehouseDto,
+    @Body(new ZodValidationPipe(UpdateWarehouseSchema)) dto: UpdateWarehouseDto,
   ) {
     return super.update(user, id, dto);
   }

@@ -2,9 +2,15 @@ import { Controller, Get, Post, Put, Body, Param } from '@nestjs/common';
 import { BaseController } from 'src/common/base.controller';
 import { PartnerService } from './partner.service';
 import { Partner } from './partner.entity';
-import { CreatePartnerDto, UpdatePartnerDto } from './partner.schema';
+import {
+  CreatePartnerDto,
+  UpdatePartnerDto,
+  CreatePartnerSchema,
+  UpdatePartnerSchema,
+} from './partner.schema';
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { CurrentUser, AuthUser } from 'src/decorators/currentUser.decorator';
+import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 
 @ApiBearerAuth('Authorization')
 @Controller('partner')
@@ -36,7 +42,7 @@ export class PartnerController extends BaseController<
   })
   override create(
     @CurrentUser() user: AuthUser,
-    @Body() dto: CreatePartnerDto,
+    @Body(new ZodValidationPipe(CreatePartnerSchema)) dto: CreatePartnerDto,
   ) {
     return super.create(user, dto);
   }
@@ -57,7 +63,7 @@ export class PartnerController extends BaseController<
   override update(
     @CurrentUser() user: AuthUser,
     @Param('id') id: string,
-    @Body() dto: UpdatePartnerDto,
+    @Body(new ZodValidationPipe(UpdatePartnerSchema)) dto: UpdatePartnerDto,
   ) {
     return super.update(user, id, dto);
   }

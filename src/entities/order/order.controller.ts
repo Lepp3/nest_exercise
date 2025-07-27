@@ -2,9 +2,15 @@ import { Controller, Put, Post, Body, Param } from '@nestjs/common';
 import { BaseController } from 'src/common/base.controller';
 import { OrderService } from './order.service';
 import { Order } from './order.entity';
-import { CreateOrderDto, UpdateOrderDto } from './order.schema';
+import {
+  CreateOrderDto,
+  UpdateOrderDto,
+  CreateOrderSchema,
+  UpdateOrderSchema,
+} from './order.schema';
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { CurrentUser, AuthUser } from 'src/decorators/currentUser.decorator';
+import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 
 @ApiBearerAuth('Authorization')
 @Controller('order')
@@ -31,7 +37,10 @@ export class OrderController extends BaseController<
       },
     },
   })
-  override create(@CurrentUser() user: AuthUser, @Body() dto: CreateOrderDto) {
+  override create(
+    @CurrentUser() user: AuthUser,
+    @Body(new ZodValidationPipe(CreateOrderSchema)) dto: CreateOrderDto,
+  ) {
     return super.create(user, dto);
   }
 
@@ -52,7 +61,7 @@ export class OrderController extends BaseController<
   override update(
     @CurrentUser() user: AuthUser,
     @Param('id') id: string,
-    @Body() dto: UpdateOrderDto,
+    @Body(new ZodValidationPipe(UpdateOrderSchema)) dto: UpdateOrderDto,
   ) {
     return super.update(user, id, dto);
   }
