@@ -4,6 +4,7 @@ import { OrderItemsService } from './orderItems.service';
 import { OrderItems } from './orderItems.entity';
 import { CreateOrderItemsDto, UpdateOrderItemsDto } from './orderItems.schema';
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { CurrentUser, AuthUser } from 'src/decorators/currentUser.decorator';
 
 @ApiBearerAuth('Authorization')
 @Controller('order-items')
@@ -16,14 +17,41 @@ export class OrderItemsController extends BaseController<
     super(orderItemsService);
   }
   @Post()
-  @ApiBody({ type: CreateOrderItemsDto })
-  override create(@Body() dto: CreateOrderItemsDto) {
-    return super.create(dto);
+  @ApiBody({
+    type: CreateOrderItemsDto,
+    examples: {
+      default: {
+        value: {
+          productId: '',
+          quantity: '',
+        },
+      },
+    },
+  })
+  override create(
+    @CurrentUser() user: AuthUser,
+    @Body() dto: CreateOrderItemsDto,
+  ) {
+    return super.create(user, dto);
   }
 
   @Put(':id')
-  @ApiBody({ type: UpdateOrderItemsDto })
-  override update(@Param() id: string, @Body() dto: UpdateOrderItemsDto) {
-    return super.update(id, dto);
+  @ApiBody({
+    type: UpdateOrderItemsDto,
+    examples: {
+      default: {
+        value: {
+          productId: '',
+          quantity: '',
+        },
+      },
+    },
+  })
+  override update(
+    @CurrentUser() user: AuthUser,
+    @Param('id') id: string,
+    @Body() dto: UpdateOrderItemsDto,
+  ) {
+    return super.update(user, id, dto);
   }
 }

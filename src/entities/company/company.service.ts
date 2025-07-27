@@ -15,10 +15,21 @@ export class CompanyService extends BaseService<Company> {
     super(repo, 'Company');
   }
 
-  async create(dto: CreateCompanyInput): Promise<Company> {
-    const existing = await this.repo.findOne({
-      where: { name: dto.name },
+  async getByName(name: string): Promise<Company | null> {
+    const company = await this.repo.findOne({
+      where: {
+        name,
+      },
     });
+    if (!company) {
+      return null;
+    }
+
+    return company;
+  }
+
+  async create(dto: CreateCompanyInput): Promise<Company> {
+    const existing = await this.getByName(dto.name);
     if (existing)
       throw new ConflictException(
         `Company with name '${dto.name}' already exists`,

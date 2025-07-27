@@ -4,6 +4,7 @@ import { PartnerService } from './partner.service';
 import { Partner } from './partner.entity';
 import { CreatePartnerDto, UpdatePartnerDto } from './partner.schema';
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { CurrentUser, AuthUser } from 'src/decorators/currentUser.decorator';
 
 @ApiBearerAuth('Authorization')
 @Controller('partner')
@@ -21,9 +22,23 @@ export class PartnerController extends BaseController<
     return this.partnerService.getMostLoyalCustomer();
   }
   @Post()
-  @ApiBody({ type: CreatePartnerDto })
-  override create(@Body() dto: CreatePartnerDto) {
-    return super.create(dto);
+  @ApiBody({
+    type: CreatePartnerDto,
+    examples: {
+      default: {
+        value: {
+          name: '',
+          partnerType: '',
+          companyId: '',
+        },
+      },
+    },
+  })
+  override create(
+    @CurrentUser() user: AuthUser,
+    @Body() dto: CreatePartnerDto,
+  ) {
+    return super.create(user, dto);
   }
 
   @Put(':id')
@@ -39,7 +54,11 @@ export class PartnerController extends BaseController<
       },
     },
   })
-  override update(@Param() id: string, @Body() dto: UpdatePartnerDto) {
-    return super.update(id, dto);
+  override update(
+    @CurrentUser() user: AuthUser,
+    @Param('id') id: string,
+    @Body() dto: UpdatePartnerDto,
+  ) {
+    return super.update(user, id, dto);
   }
 }

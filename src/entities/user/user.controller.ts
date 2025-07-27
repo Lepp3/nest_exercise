@@ -2,8 +2,13 @@ import { Controller, Post, Put, Body, Param } from '@nestjs/common';
 import { BaseController } from 'src/common/base.controller';
 import { UserService } from './user.service';
 import { User } from './user.entity';
-import { CreateUserDto, UpdateUserDto } from './update-user.schema';
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  ClientUserDto,
+} from './update-user.schema';
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { CurrentUser, AuthUser } from 'src/decorators/currentUser.decorator';
 
 @ApiBearerAuth('Authorization')
 @Controller('user')
@@ -16,14 +21,40 @@ export class UserController extends BaseController<
     super(userService);
   }
   @Post()
-  @ApiBody({ type: CreateUserDto })
-  override create(@Body() dto: CreateUserDto) {
-    return super.create(dto);
+  @ApiBody({
+    type: ClientUserDto,
+    examples: {
+      default: {
+        value: {
+          name: '',
+          userName: '',
+          role: '',
+        },
+      },
+    },
+  })
+  override create(@CurrentUser() user: AuthUser, @Body() dto: CreateUserDto) {
+    return this.userService.addUserToCompany(dto, user.companyId, user.id);
   }
 
   @Put(':id')
-  @ApiBody({ type: UpdateUserDto })
-  override update(@Param() id: string, @Body() dto: UpdateUserDto) {
-    return super.update(id, dto);
+  @ApiBody({
+    type: UpdateUserDto,
+    examples: {
+      default: {
+        value: {
+          name: '',
+          userName: '',
+          role: '',
+        },
+      },
+    },
+  })
+  override update(
+    @CurrentUser() user: AuthUser,
+    @Param('id') id: string,
+    @Body() dto: UpdateUserDto,
+  ) {
+    return super.update(user, id, dto);
   }
 }

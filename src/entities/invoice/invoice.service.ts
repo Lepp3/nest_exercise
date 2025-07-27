@@ -15,8 +15,8 @@ export class InvoiceService extends BaseService<Invoice> {
     super(repo, 'Invoice');
   }
 
-  async create(dto: CreateInvoiceInput) {
-    return super.create(dto);
+  async create(dto: CreateInvoiceInput, companyId: string, userId: string) {
+    return super.create(dto, companyId, userId);
   }
 
   async update(id: string, dto: UpdateInvoiceInput) {

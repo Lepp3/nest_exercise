@@ -20,15 +20,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: false,
   logging: true,
-  entities: [
-    Company,
-    User,
-    Warehouse,
-    Partner,
-    Product,
-    Order,
-    OrderItems,
-    Invoice,
-  ],
+  entities: [User, Warehouse, Partner, Product, Order, OrderItems, Invoice],
   migrations: ['dist/migrations/*.js'],
+  migrationsRun: true,
 });

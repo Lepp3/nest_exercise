@@ -25,8 +25,8 @@ export class PartnerService extends BaseService<Partner> {
     super(repo, 'Partner');
   }
 
-  async create(dto: CreatePartnerInput) {
-    return super.create(dto);
+  async create(dto: CreatePartnerInput, companyId: string) {
+    return super.create(dto, companyId);
   }
 
   async update(id: string, dto: UpdatePartnerInput) {
@@ -42,7 +42,7 @@ export class PartnerService extends BaseService<Partner> {
   }
 
   async getMostLoyalCustomer(): Promise<MostLoyalCustomer | null> {
-    const result = await this.repo
+    const result = await this.orderRepo
       .createQueryBuilder('o')
       .select('o.company_id', 'companyId')
       .addSelect('c.name', 'customerName')

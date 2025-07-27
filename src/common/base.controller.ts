@@ -12,6 +12,7 @@ import { Roles } from 'src/decorators/roles.decorator';
 import { UserRole } from 'src/entities/user/user.entity';
 import { DeleteResult, DeepPartial } from 'typeorm';
 import { BaseEntity } from 'src/common/base.entity';
+import { AuthUser, CurrentUser } from 'src/decorators/currentUser.decorator';
 
 @Controller()
 export abstract class BaseController<
@@ -22,8 +23,8 @@ export abstract class BaseController<
   constructor(protected readonly service: BaseService<T>) {}
 
   @Get()
-  getAll(): Promise<T[]> {
-    return this.service.getAll();
+  getAll(@CurrentUser() user: AuthUser): Promise<T[]> {
+    return this.service.getAll(user.companyId);
   }
 
   @Get(':id')
@@ -33,25 +34,35 @@ export abstract class BaseController<
 
   @Post()
   @Roles(UserRole.OPERATOR, UserRole.OWNER)
-  create(@Body() dto: CreateDto): Promise<T> {
-    return this.service.create(dto);
+  create(@CurrentUser() user: AuthUser, @Body() dto: CreateDto): Promise<T> {
+    return this.service.create(dto, user.companyId, user.id);
   }
 
   @Put(':id')
   @Roles(UserRole.OPERATOR, UserRole.OWNER)
-  update(@Param('id') id: string, @Body() dto: UpdateDto): Promise<T> {
-    return this.service.update(id, dto);
+  update(
+    @CurrentUser() user: AuthUser,
+    @Param('id') id: string,
+    @Body() dto: UpdateDto,
+  ): Promise<T> {
+    return this.service.update(id, dto, user.companyId);
   }
 
   @Delete(':id/hard')
   @Roles(UserRole.OWNER)
-  delete(@Param('id') id: string): Promise<DeleteResult> {
-    return this.service.delete(id);
+  delete(
+    @CurrentUser() user: AuthUser,
+    @Param('id') id: string,
+  ): Promise<DeleteResult> {
+    return this.service.delete(id, user.companyId);
   }
 
   @Delete(':id/soft')
   @Roles(UserRole.OWNER, UserRole.OPERATOR)
-  softDelete(@Param('id') id: string): Promise<DeleteResult> {
-    return this.service.softDelete(id);
+  softDelete(
+    @CurrentUser() user: AuthUser,
+    @Param('id') id: string,
+  ): Promise<DeleteResult> {
+    return this.service.softDelete(id, user.companyId);
   }
 }

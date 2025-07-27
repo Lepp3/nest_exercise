@@ -4,7 +4,7 @@ import { InvoiceService } from './invoice.service';
 import { Invoice } from './invoice.entity';
 import { CreateInvoiceDto, UpdateInvoiceDto } from './invoice.schema';
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
-
+import { CurrentUser, AuthUser } from 'src/decorators/currentUser.decorator';
 @ApiBearerAuth('Authorization')
 @Controller('invoice')
 export class InvoiceController extends BaseController<
@@ -17,14 +17,43 @@ export class InvoiceController extends BaseController<
   }
 
   @Post()
-  @ApiBody({ type: CreateInvoiceDto })
-  override create(@Body() dto: CreateInvoiceDto) {
-    return super.create(dto);
+  @ApiBody({
+    type: CreateInvoiceDto,
+    examples: {
+      default: {
+        value: {
+          orderId: '',
+          date: '',
+          invoiceNumber: '',
+        },
+      },
+    },
+  })
+  override create(
+    @CurrentUser() user: AuthUser,
+    @Body() dto: CreateInvoiceDto,
+  ) {
+    return super.create(user, dto);
   }
 
   @Put(':id')
-  @ApiBody({ type: UpdateInvoiceDto })
-  override update(@Param() id: string, @Body() dto: UpdateInvoiceDto) {
-    return super.update(id, dto);
+  @ApiBody({
+    type: UpdateInvoiceDto,
+    examples: {
+      default: {
+        value: {
+          orderId: '',
+          date: '',
+          invoiceNumber: '',
+        },
+      },
+    },
+  })
+  override update(
+    @CurrentUser() user: AuthUser,
+    @Param('id') id: string,
+    @Body() dto: UpdateInvoiceDto,
+  ) {
+    return super.update(user, id, dto);
   }
 }

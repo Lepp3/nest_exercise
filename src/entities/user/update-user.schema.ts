@@ -3,12 +3,15 @@ import { UserRole } from './user.entity';
 import { createZodDto } from 'nestjs-zod';
 
 export const CreateUserSchema = z.object({
-  name: z.string().min(2).optional(),
+  name: z.string().min(2),
   username: z.string().min(4),
   password: z.string().min(6),
   role: z.enum(UserRole),
   companyId: z.uuid(),
 });
+
+const ClientUserSchema = CreateUserSchema.omit({ companyId: true });
+export class ClientUserDto extends createZodDto(ClientUserSchema) {}
 
 export const UpdateUserSchema = CreateUserSchema.partial();
 

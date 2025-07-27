@@ -15,8 +15,8 @@ export class OrderService extends BaseService<Order> {
     super(repo, 'Order');
   }
 
-  async create(dto: CreateOrderInput) {
-    return super.create(dto);
+  async create(dto: CreateOrderInput, companyId: string, userId: string) {
+    return super.create(dto, companyId, userId);
   }
 
   async update(id: string, dto: UpdateOrderInput) {

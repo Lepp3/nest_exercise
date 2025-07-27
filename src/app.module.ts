@@ -39,7 +39,6 @@ import { InvoiceModule } from './entities/invoice/invoice.module';
           password: db?.password,
           database: db?.name,
           autoLoadEntities: true,
-          // entities: [__dirname + '/**/*.entity.{ts,js}'],
           synchronize: false,
           retryAttempts: 4,
           logging: true,
