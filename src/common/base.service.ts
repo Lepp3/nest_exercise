@@ -1,5 +1,5 @@
 import { NotFoundException } from '@nestjs/common';
-import { Repository, DeepPartial, FindOptionsWhere } from 'typeorm';
+import { Repository, FindOptionsWhere } from 'typeorm';
 import { BaseEntity } from 'src/common/base.entity';
 
 export abstract class BaseService<T extends BaseEntity> {
@@ -18,13 +18,6 @@ export abstract class BaseService<T extends BaseEntity> {
     return items;
   }
 
-  async getByname(name: string) {
-    const item = await this.repo.findOne({
-      where: { name } as unknown as FindOptionsWhere<T>,
-    });
-    return item ? item : null;
-  }
-
   async getById(id: string, companyId?: string): Promise<T> {
     console.log('log from getbyId', companyId);
     const item = await this.repo.findOne({
@@ -39,28 +32,6 @@ export abstract class BaseService<T extends BaseEntity> {
       );
     }
     return item;
-  }
-
-  async create(
-    data: DeepPartial<T>,
-    companyId?: string,
-    userId?: string,
-  ): Promise<T> {
-    const entity = this.repo.create({
-      ...data,
-      companyId,
-      userId,
-      modifiedBy: userId,
-    });
-    return this.repo.save(entity);
-  }
-
-  async update(id: string, data: Partial<T>, companyId?: string): Promise<T> {
-    const item = await this.getById(id, companyId);
-    if (!item)
-      throw new NotFoundException(`${this.repo.metadata.tableName} not found`);
-    Object.assign(item, data);
-    return this.repo.save(item);
   }
 
   async softDelete(id: string, companyId?: string) {

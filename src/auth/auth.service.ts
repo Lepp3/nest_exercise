@@ -1,29 +1,33 @@
-import {
-  Injectable,
-  UnauthorizedException,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserService } from 'src/entities/user/user.service';
 import { LoginInput } from './login.schema';
 import { RegisterWithCompanyInput } from './register.schema';
 import { CompanyService } from 'src/entities/company/company.service';
-import { UserRole } from 'src/entities/user/user.entity';
+import { User, UserRole } from 'src/entities/user/user.entity';
+import { validateUniqueField } from 'src/common/validators/uniqueName.validator';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Company } from 'src/entities/company/company.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
+    @InjectRepository(User) private readonly userRepo: Repository<User>,
+    @InjectRepository(Company)
+    private readonly companyRepo: Repository<Company>,
     private userService: UserService,
     private companyService: CompanyService,
     private jwtService: JwtService,
   ) {}
 
   async register(data: RegisterWithCompanyInput) {
-    const existingCompany = await this.companyService.getByName(data.name);
-    if (existingCompany) {
-      return new ConflictException('Company with this name already exists!');
-    }
+    await validateUniqueField(
+      this.companyRepo,
+      { name: data.companyName },
+      'Company name',
+    );
     const company = await this.companyService.create({
       name: data.companyName,
       location: data.companyLocation,

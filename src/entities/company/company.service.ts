@@ -1,10 +1,12 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Company } from './company.entity';
 import { z } from 'zod';
 import { CreateCompanySchema, UpdateCompanySchema } from './company.schema';
 import { BaseService } from 'src/common/base.service';
+import { validateUniqueField } from 'src/common/validators/uniqueName.validator';
+import { AuthUser } from 'src/decorators/currentUser.decorator';
 
 export type CreateCompanyInput = z.infer<typeof CreateCompanySchema>;
 export type UpdateCompanyInput = z.infer<typeof UpdateCompanySchema>;
@@ -15,42 +17,30 @@ export class CompanyService extends BaseService<Company> {
     super(repo);
   }
 
-  async getByName(name: string): Promise<Company | null> {
-    const company = await this.repo.findOne({
-      where: {
-        name,
-      },
-    });
-    if (!company) {
-      return null;
-    }
-
-    return company;
-  }
-
   async create(dto: CreateCompanyInput): Promise<Company> {
-    const existing = await this.getByName(dto.name);
-    if (existing)
-      throw new ConflictException(
-        `Company with name '${dto.name}' already exists`,
-      );
-
-    return super.create(dto);
+    const company = this.repo.create(dto);
+    return this.repo.save(company);
   }
 
-  async update(id: string, dto: UpdateCompanyInput): Promise<Company> {
+  async update(
+    user: AuthUser,
+    id: string,
+    dto: UpdateCompanyInput,
+  ): Promise<Company> {
     const company = await this.getById(id);
-    if (dto.name !== company.name) {
-      const existing = await this.repo.findOne({
-        where: { name: dto.name },
-      });
-      if (existing)
-        throw new ConflictException(
-          `Company with name '${dto.name}' already exists`,
-        );
+    if (company && company.id !== user.companyId) {
+      throw new ConflictException(
+        'Cannot modify records from other companies!',
+      );
+    }
+    if (dto.name && dto.name !== company.name) {
+      await validateUniqueField(this.repo, { name: dto.name }, 'Name');
     }
 
-    return super.update(id, dto);
+    Object.assign(company, dto);
+    company.modifiedBy = user.id;
+
+    return this.repo.save(company);
   }
 
   async softDelete(id: string) {

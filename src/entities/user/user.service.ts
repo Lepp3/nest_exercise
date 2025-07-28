@@ -1,6 +1,6 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { User } from './user.entity';
 import { BaseService } from 'src/common/base.service';
 import { z } from 'zod';
@@ -11,6 +11,7 @@ import {
   ClientUserDto,
 } from './update-user.schema';
 import * as bcrypt from 'bcrypt';
+import { validateUniqueField } from 'src/common/validators/uniqueName.validator';
 
 export type CreateUserInput = z.infer<typeof CreateUserSchema>;
 export type UpdateUserInput = z.infer<typeof UpdateUserSchema>;
@@ -19,6 +20,17 @@ export type UpdateUserInput = z.infer<typeof UpdateUserSchema>;
 export class UserService extends BaseService<User> {
   constructor(@InjectRepository(User) repo: Repository<User>) {
     super(repo);
+  }
+
+  protected override async beforeCreate(
+    data: DeepPartial<User>,
+    companyId: string,
+  ) {
+    await validateUniqueField(
+      this.repo,
+      { username: data.username!, companyId },
+      'Username',
+    );
   }
 
   async getByUsername(username: string, withPassword = false) {
@@ -44,10 +56,6 @@ export class UserService extends BaseService<User> {
     companyId: string,
     userId: string,
   ) {
-    const existing = await this.getByUsername(dto.username);
-    if (existing) {
-      throw new ConflictException('user with this username already exists');
-    }
     const hashedPassword = await bcrypt.hash(dto.password, 10);
     const modifiedDto = {
       name: dto.name,

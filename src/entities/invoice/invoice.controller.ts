@@ -9,11 +9,7 @@ import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { CreateInvoiceSchema, UpdateInvoiceSchema } from './invoice.schema';
 @ApiBearerAuth('Authorization')
 @Controller('invoice')
-export class InvoiceController extends BaseController<
-  Invoice,
-  CreateInvoiceDto,
-  UpdateInvoiceDto
-> {
+export class InvoiceController extends BaseController<Invoice> {
   constructor(protected readonly invoiceService: InvoiceService) {
     super(invoiceService);
   }
@@ -31,7 +27,7 @@ export class InvoiceController extends BaseController<
       },
     },
   })
-  override create(
+  create(
     @CurrentUser() user: AuthUser,
     @Body(new ZodValidationPipe(CreateInvoiceSchema)) dto: CreateInvoiceDto,
   ) {
@@ -51,7 +47,7 @@ export class InvoiceController extends BaseController<
       },
     },
   })
-  override update(
+  update(
     @CurrentUser() user: AuthUser,
     @Param('id') id: string,
     @Body(new ZodValidationPipe(UpdateInvoiceSchema)) dto: UpdateInvoiceDto,

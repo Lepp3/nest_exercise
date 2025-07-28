@@ -1,6 +1,5 @@
 import {
   Controller,
-  Post,
   Put,
   Body,
   Param,
@@ -10,18 +9,14 @@ import {
 } from '@nestjs/common';
 import { Company } from './company.entity';
 import { CompanyService } from './company.service';
-import { CreateCompanyDto, UpdateCompanyDto } from './company.schema';
+import { UpdateCompanyDto } from './company.schema';
 import { BaseController } from 'src/common/base.controller';
 import { ApiBearerAuth, ApiBody, ApiExcludeEndpoint } from '@nestjs/swagger';
 import { CurrentUser, AuthUser } from 'src/decorators/currentUser.decorator';
 
 @ApiBearerAuth('Authorization')
 @Controller('company')
-export class CompanyController extends BaseController<
-  Company,
-  CreateCompanyDto,
-  UpdateCompanyDto
-> {
+export class CompanyController extends BaseController<Company> {
   constructor(protected readonly companyService: CompanyService) {
     super(companyService);
   }
@@ -31,36 +26,6 @@ export class CompanyController extends BaseController<
   @HttpCode(403)
   override getAll(): Promise<Company[]> {
     throw new ForbiddenException('Access to company list is restricted');
-  }
-
-  // @Get(':id')
-  // @ApiExcludeEndpoint()
-  // @HttpCode(403)
-  // override getById(@Param('id') _id: string): Promise<Company> {
-  //   throw new ForbiddenException('Access to company details is restricted');
-  // }
-
-  @Post()
-  @ApiExcludeEndpoint()
-  @HttpCode(403)
-  @ApiBody({
-    type: CreateCompanyDto,
-    examples: {
-      default: {
-        value: {
-          name: '',
-          location: '',
-        },
-      },
-    },
-  })
-  override create(
-    @CurrentUser() _user: AuthUser,
-    @Body() _dto: CreateCompanyDto,
-  ): Promise<Company> {
-    throw new ForbiddenException(
-      'Company creation is only allowed via registration',
-    );
   }
 
   @Put(':id')
@@ -75,11 +40,11 @@ export class CompanyController extends BaseController<
       },
     },
   })
-  override update(
+  update(
     @CurrentUser() user: AuthUser,
     @Param('id') id: string,
     @Body() dto: UpdateCompanyDto,
   ) {
-    return super.update(user, id, dto);
+    return this.companyService.update(user, id, dto);
   }
 }
