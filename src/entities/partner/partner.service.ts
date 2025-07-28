@@ -22,23 +22,7 @@ export class PartnerService extends BaseService<Partner> {
     @InjectRepository(Partner) repo: Repository<Partner>,
     @InjectRepository(Order) private readonly orderRepo: Repository<Order>,
   ) {
-    super(repo, 'Partner');
-  }
-
-  async create(dto: CreatePartnerInput, companyId: string) {
-    return super.create(dto, companyId);
-  }
-
-  async update(id: string, dto: UpdatePartnerInput) {
-    return super.update(id, dto);
-  }
-
-  async softDelete(id: string) {
-    return super.softDelete(id);
-  }
-
-  async delete(id: string) {
-    return super.delete(id);
+    super(repo);
   }
 
   async getMostLoyalCustomer(): Promise<MostLoyalCustomer | null> {

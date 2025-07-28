@@ -12,22 +12,6 @@ export type UpdateOrderInput = z.infer<typeof UpdateOrderSchema>;
 @Injectable()
 export class OrderService extends BaseService<Order> {
   constructor(@InjectRepository(Order) repo: Repository<Order>) {
-    super(repo, 'Order');
-  }
-
-  async create(dto: CreateOrderInput, companyId: string, userId: string) {
-    return super.create(dto, companyId, userId);
-  }
-
-  async update(id: string, dto: UpdateOrderInput) {
-    return super.update(id, dto);
-  }
-
-  async softDelete(id: string) {
-    return super.softDelete(id);
-  }
-
-  async delete(id: string) {
-    return super.delete(id);
+    super(repo);
   }
 }

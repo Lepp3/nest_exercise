@@ -24,23 +24,7 @@ export class WarehouseService extends BaseService<Warehouse> {
     @InjectRepository(Warehouse) repo: Repository<Warehouse>,
     @InjectRepository(Order) private readonly orderRepo: Repository<Order>,
   ) {
-    super(repo, 'Warehouse');
-  }
-
-  async create(dto: CreateWarehouseInput, companyId: string, userId: string) {
-    return super.create(dto, companyId, userId);
-  }
-
-  async update(id: string, dto: UpdateWarehouseInput) {
-    return super.update(id, dto);
-  }
-
-  async softDelete(id: string) {
-    return super.softDelete(id);
-  }
-
-  async delete(id: string) {
-    return super.delete(id);
+    super(repo);
   }
 
   async getHighestStockPerWarehouse(): Promise<HighestStockPerWarehouse[]> {

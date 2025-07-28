@@ -12,7 +12,7 @@ export type UpdateCompanyInput = z.infer<typeof UpdateCompanySchema>;
 @Injectable()
 export class CompanyService extends BaseService<Company> {
   constructor(@InjectRepository(Company) repo: Repository<Company>) {
-    super(repo, 'Company');
+    super(repo);
   }
 
   async getByName(name: string): Promise<Company | null> {

@@ -8,8 +8,7 @@ export const CreateOrderSchema = z.object({
   date: z.date(),
   warehouseId: z.uuid(),
   partnerId: z.uuid(),
-  userId: z.uuid(),
-  // companyId: z.uuid(),
+  // userId: z.uuid(),
 });
 
 export const UpdateOrderSchema = CreateOrderSchema.partial();

@@ -21,23 +21,7 @@ export class ProductService extends BaseService<Product> {
     @InjectRepository(OrderItems)
     private readonly orderItemsRepo: Repository<OrderItems>,
   ) {
-    super(repo, 'Product');
-  }
-
-  async create(dto: CreateProductInput, companyId: string) {
-    return super.create(dto, companyId);
-  }
-
-  async update(id: string, dto: UpdateProductInput) {
-    return super.update(id, dto);
-  }
-
-  async softDelete(id: string) {
-    return super.softDelete(id);
-  }
-
-  async delete(id: string) {
-    return super.delete(id);
+    super(repo);
   }
 
   async getTopSellingProducts(

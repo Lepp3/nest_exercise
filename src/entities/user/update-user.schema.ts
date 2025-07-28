@@ -12,6 +12,7 @@ export const CreateUserSchema = z.object({
 
 const ClientUserSchema = CreateUserSchema.omit({ companyId: true });
 export class ClientUserDto extends createZodDto(ClientUserSchema) {}
+export type ClientUserInput = z.infer<typeof ClientUserSchema>;
 
 export const UpdateUserSchema = CreateUserSchema.partial();
 

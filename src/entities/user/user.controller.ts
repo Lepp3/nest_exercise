@@ -6,6 +6,7 @@ import {
   CreateUserDto,
   UpdateUserDto,
   ClientUserDto,
+  ClientUserInput,
 } from './update-user.schema';
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { CurrentUser, AuthUser } from 'src/decorators/currentUser.decorator';
@@ -34,8 +35,12 @@ export class UserController extends BaseController<
       },
     },
   })
-  override create(@CurrentUser() user: AuthUser, @Body() dto: CreateUserDto) {
-    return this.userService.addUserToCompany(dto, user.companyId, user.id);
+  override create(@CurrentUser() user: AuthUser, @Body() dto: ClientUserDto) {
+    return this.userService.addUserToCompany(
+      dto as ClientUserDto & ClientUserInput,
+      user.companyId,
+      user.id,
+    );
   }
 
   @Put(':id')

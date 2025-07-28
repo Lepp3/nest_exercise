@@ -28,8 +28,8 @@ export abstract class BaseController<
   }
 
   @Get(':id')
-  getById(@Param('id') id: string): Promise<T> {
-    return this.service.getById(id);
+  getById(@CurrentUser() user: AuthUser, @Param('id') id: string): Promise<T> {
+    return this.service.getById(id, user.companyId);
   }
 
   @Post()
@@ -63,6 +63,7 @@ export abstract class BaseController<
     @CurrentUser() user: AuthUser,
     @Param('id') id: string,
   ): Promise<DeleteResult> {
+    console.log('log from controller', user.companyId);
     return this.service.softDelete(id, user.companyId);
   }
 }

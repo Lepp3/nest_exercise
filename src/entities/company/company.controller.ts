@@ -6,12 +6,13 @@ import {
   Param,
   Get,
   ForbiddenException,
+  HttpCode,
 } from '@nestjs/common';
 import { Company } from './company.entity';
 import { CompanyService } from './company.service';
 import { CreateCompanyDto, UpdateCompanyDto } from './company.schema';
 import { BaseController } from 'src/common/base.controller';
-import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiExcludeEndpoint } from '@nestjs/swagger';
 import { CurrentUser, AuthUser } from 'src/decorators/currentUser.decorator';
 
 @ApiBearerAuth('Authorization')
@@ -26,16 +27,22 @@ export class CompanyController extends BaseController<
   }
 
   @Get()
+  @ApiExcludeEndpoint()
+  @HttpCode(403)
   override getAll(): Promise<Company[]> {
     throw new ForbiddenException('Access to company list is restricted');
   }
 
-  @Get(':id')
-  override getById(@Param('id') _id: string): Promise<Company> {
-    throw new ForbiddenException('Access to company details is restricted');
-  }
+  // @Get(':id')
+  // @ApiExcludeEndpoint()
+  // @HttpCode(403)
+  // override getById(@Param('id') _id: string): Promise<Company> {
+  //   throw new ForbiddenException('Access to company details is restricted');
+  // }
 
   @Post()
+  @ApiExcludeEndpoint()
+  @HttpCode(403)
   @ApiBody({
     type: CreateCompanyDto,
     examples: {
@@ -70,7 +77,7 @@ export class CompanyController extends BaseController<
   })
   override update(
     @CurrentUser() user: AuthUser,
-    @Param() id: string,
+    @Param('id') id: string,
     @Body() dto: UpdateCompanyDto,
   ) {
     return super.update(user, id, dto);

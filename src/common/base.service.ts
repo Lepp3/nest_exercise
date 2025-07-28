@@ -3,30 +3,41 @@ import { Repository, DeepPartial, FindOptionsWhere } from 'typeorm';
 import { BaseEntity } from 'src/common/base.entity';
 
 export abstract class BaseService<T extends BaseEntity> {
-  constructor(
-    protected readonly repo: Repository<T>,
-    protected readonly entityName: string,
-  ) {}
+  constructor(protected readonly repo: Repository<T>) {}
   async getAll(companyId?: string): Promise<T[]> {
     const items = await this.repo.find({
       where: {
-        companyId,
         ...(companyId ? { companyId } : {}),
       } as FindOptionsWhere<T>,
     });
 
     if (!items) {
-      throw new NotFoundException(`Items not found!`);
+      return [];
     }
-    //empty arr instead of error i gaz
+
     return items;
   }
 
+  async getByname(name: string) {
+    const item = await this.repo.findOne({
+      where: { name } as unknown as FindOptionsWhere<T>,
+    });
+    return item ? item : null;
+  }
+
   async getById(id: string, companyId?: string): Promise<T> {
+    console.log('log from getbyId', companyId);
     const item = await this.repo.findOne({
       where: { id, ...(companyId ? { companyId } : {}) } as FindOptionsWhere<T>,
     });
-    if (!item) throw new NotFoundException(`${this.entityName} not found`);
+    if (!item)
+      throw new NotFoundException(`${this.repo.metadata.tableName} not found`);
+
+    if ('companyId' in item && item.companyId !== companyId) {
+      throw new NotFoundException(
+        `${this.repo.metadata.tableName} not found in your company scope`,
+      );
+    }
     return item;
   }
 
@@ -46,12 +57,14 @@ export abstract class BaseService<T extends BaseEntity> {
 
   async update(id: string, data: Partial<T>, companyId?: string): Promise<T> {
     const item = await this.getById(id, companyId);
-    if (!item) throw new NotFoundException(`${this.entityName} not found`);
+    if (!item)
+      throw new NotFoundException(`${this.repo.metadata.tableName} not found`);
     Object.assign(item, data);
     return this.repo.save(item);
   }
 
   async softDelete(id: string, companyId?: string) {
+    console.log('log from soft delete service', companyId);
     await this.getById(id, companyId);
     return this.repo.softDelete(id);
   }
