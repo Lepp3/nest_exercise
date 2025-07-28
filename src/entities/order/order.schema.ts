@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { OrderType } from './order.entity';
 import { createZodDto } from 'nestjs-zod';
+import { CreateOrderItemsSchema } from '../orderItems/orderItems.schema';
 
 export const CreateOrderSchema = z.object({
   id: z.uuid().optional(),
@@ -8,7 +9,7 @@ export const CreateOrderSchema = z.object({
   date: z.date(),
   warehouseId: z.uuid(),
   partnerId: z.uuid(),
-  // userId: z.uuid(),
+  items: z.array(CreateOrderItemsSchema),
 });
 
 export const UpdateOrderSchema = CreateOrderSchema.partial();

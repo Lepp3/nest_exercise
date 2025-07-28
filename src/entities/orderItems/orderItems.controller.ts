@@ -1,6 +1,6 @@
 import { Controller, Param, Post, Put, Body } from '@nestjs/common';
 import { BaseController } from 'src/common/base.controller';
-import { OrderItemsService } from './orderItems.service';
+import { CreateOrderItemsInput, OrderItemsService } from './orderItems.service';
 import { OrderItems } from './orderItems.entity';
 import { CreateOrderItemsDto, UpdateOrderItemsDto } from './orderItems.schema';
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
@@ -8,11 +8,7 @@ import { CurrentUser, AuthUser } from 'src/decorators/currentUser.decorator';
 
 @ApiBearerAuth('Authorization')
 @Controller('order-items')
-export class OrderItemsController extends BaseController<
-  OrderItems,
-  CreateOrderItemsDto,
-  UpdateOrderItemsDto
-> {
+export class OrderItemsController extends BaseController<OrderItems> {
   constructor(protected readonly orderItemsService: OrderItemsService) {
     super(orderItemsService);
   }
@@ -28,11 +24,8 @@ export class OrderItemsController extends BaseController<
       },
     },
   })
-  override create(
-    @CurrentUser() user: AuthUser,
-    @Body() dto: CreateOrderItemsDto,
-  ) {
-    return super.create(user, dto);
+  create(@CurrentUser() user: AuthUser, @Body() dto: CreateOrderItemsInput) {
+    return this.orderItemsService.create(user, dto);
   }
 
   @Put(':id')
@@ -47,11 +40,11 @@ export class OrderItemsController extends BaseController<
       },
     },
   })
-  override update(
+  update(
     @CurrentUser() user: AuthUser,
     @Param('id') id: string,
     @Body() dto: UpdateOrderItemsDto,
   ) {
-    return super.update(user, id, dto);
+    return this.orderItemsService.update(user, id, dto);
   }
 }

@@ -1,6 +1,6 @@
 import { Controller, Post, Put, Param, Body } from '@nestjs/common';
 import { BaseController } from 'src/common/base.controller';
-import { InvoiceService } from './invoice.service';
+import { CreateInvoiceInput, InvoiceService } from './invoice.service';
 import { Invoice } from './invoice.entity';
 import { CreateInvoiceDto, UpdateInvoiceDto } from './invoice.schema';
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
@@ -29,9 +29,9 @@ export class InvoiceController extends BaseController<Invoice> {
   })
   create(
     @CurrentUser() user: AuthUser,
-    @Body(new ZodValidationPipe(CreateInvoiceSchema)) dto: CreateInvoiceDto,
+    @Body(new ZodValidationPipe(CreateInvoiceSchema)) dto: CreateInvoiceInput,
   ) {
-    return super.create(user, dto);
+    return this.invoiceService.create(user, dto);
   }
 
   @Put(':id')
@@ -52,6 +52,6 @@ export class InvoiceController extends BaseController<Invoice> {
     @Param('id') id: string,
     @Body(new ZodValidationPipe(UpdateInvoiceSchema)) dto: UpdateInvoiceDto,
   ) {
-    return super.update(user, id, dto);
+    return this.invoiceService.update(user, id, dto);
   }
 }
