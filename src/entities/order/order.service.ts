@@ -1,12 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Order } from './order.entity';
+import { Order, OrderType } from './order.entity';
 import { BaseService } from 'src/common/base.service';
 import { z } from 'zod';
 import { CreateOrderSchema, UpdateOrderSchema } from './order.schema';
 import { AuthUser } from 'src/decorators/currentUser.decorator';
 import { OrderItems } from '../orderItems/orderItems.entity';
+import { WarehouseService } from '../warehouse/warehouse.service';
+import { PartnerService } from '../partner/partner.service';
+import { PartnerType } from '../partner/partner.entity';
+import { ProductService } from '../product/product.service';
 
 export type CreateOrderInput = z.infer<typeof CreateOrderSchema>;
 export type UpdateOrderInput = z.infer<typeof UpdateOrderSchema>;
@@ -17,6 +21,9 @@ export class OrderService extends BaseService<Order> {
   constructor(
     @InjectRepository(Order) repo: Repository<Order>,
     @InjectRepository(OrderItems) orderItemsRepo: Repository<OrderItems>,
+    private readonly warehouseService: WarehouseService,
+    private readonly partnerService: PartnerService,
+    private readonly productService: ProductService,
   ) {
     super(repo);
     this.orderItemsRepo = orderItemsRepo;
@@ -24,6 +31,39 @@ export class OrderService extends BaseService<Order> {
 
   async createOrderWithItems(user: AuthUser, dto: CreateOrderInput) {
     const { items, ...orderData } = dto;
+    const warehouse = await this.warehouseService.getById(
+      dto.warehouseId,
+      user.companyId,
+    );
+    const partner = await this.partnerService.getById(
+      dto.partnerId,
+      user.companyId,
+    );
+    if (
+      (partner.partnerType === PartnerType.CUSTOMER &&
+        dto.type === OrderType.DELIVERY) ||
+      (partner.partnerType === PartnerType.SUPPLIER &&
+        dto.type === OrderType.SHIPMENT)
+    ) {
+      return new ConflictException(
+        'Partner type incompatible with order type!',
+      );
+    }
+
+    const products = await Promise.all(
+      items.map((item) =>
+        this.productService.getById(item.productId, user.companyId),
+      ),
+    );
+
+    products.forEach((product) => {
+      if (product.type !== warehouse.supportType) {
+        throw new ConflictException(
+          `${product.name} of type ${product.type} does not match warehouse support type!`,
+        );
+      }
+    });
+
     const order = this.repo.create(orderData);
     order.companyId = user.companyId;
     await this.repo.save(order);
@@ -35,6 +75,8 @@ export class OrderService extends BaseService<Order> {
     }));
 
     await this.orderItemsRepo.save(orderItems);
+
+    return { order, items: orderItems };
   }
 
   async updateOrderWithItems(
